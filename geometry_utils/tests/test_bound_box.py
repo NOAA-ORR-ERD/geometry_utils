@@ -9,6 +9,7 @@ FIXME: nice to make these plain pytests someday
 
 import numpy as np
 import unittest
+import pytest
 
 from geometry_utils.bound_box import (BBox,
                                       asBBox,
@@ -29,87 +30,81 @@ class TestConstructors():
         B = np.array(((0, 0), (5, 5)))
         assert not isinstance(B, BBox)
 
-    # def testDataType(self):
-    #     B = BBox(((0, 0), (5, 5)))
-    #     self.failUnless(B.dtype == np.float)
+    def testDataType(self):
+        B = BBox(((0, 0), (5, 5)))
+        assert B.dtype == np.float
 
-    # def testShape(self):
-    #     B = BBox((0, 0, 5, 5))
-    #     self.failUnless(B.shape == (2, 2))
+    def testShape(self):
+        B = BBox((0, 0, 5, 5))
+        assert B.shape == (2, 2)
 
-    # def testShape2(self):
-    #     self.failUnlessRaises(ValueError, BBox, (0, 0, 5))
+    def testShape2(self):
+        with pytest.raises(ValueError):
+            BBox((0, 0, 5))
 
-    # def testShape3(self):
-    #     self.failUnlessRaises(ValueError, BBox, (0, 0, 5, 6, 7))
+    def testShape3(self):
+        with pytest.raises(ValueError):
+            BBox((0, 0, 5, 6, 7))
 
-    # def testArrayConstruction(self):
-    #     A = np.array(((4, 5), (10, 12)), np.float_)
-    #     B = BBox(A)
-    #     self.failUnless(isinstance(B, BBox))
+    def testArrayConstruction(self):
+        A = np.array(((4, 5), (10, 12)), np.float_)
+        B = BBox(A)
+        assert isinstance(B, BBox)
 
-    # def testMinMax(self):
-    #     self.failUnlessRaises(ValueError, BBox, (0, 0, -1, 6))
+    def testMinMax(self):
+        with pytest.raises(ValueError):
+            BBox((0, 0, -1, 6))
 
-    # def testMinMax2(self):
-    #     self.failUnlessRaises(ValueError, BBox, (0, 0, 1, -6))
+    def testMinMax2(self):
+        with pytest.raises(ValueError):
+            BBox((0, 0, 1, -6))
 
-    # def testMinMax3(self):
+    def testMinMax3(self):
+        # OK to have a zero-sized BB
 
-    #     # OK to have a zero-sized BB
+        B = BBox(((0, 0), (0, 5)))
+        assert isinstance(B, BBox)
 
-    #     B = BBox(((0, 0), (0, 5)))
-    #     self.failUnless(isinstance(B, BBox))
+    def testMinMax4(self):
+        # OK to have a zero-sized BB
+        B = BBox(((10., -34), (10., -34.0)))
+        assert isinstance(B, BBox)
 
-    # def testMinMax4(self):
+    def testMinMax5(self):
+        # OK to have a tiny BB
+        B = BBox(((0, 0), (1e-20, 5)))
+        assert isinstance(B, BBox)
 
-    #     # OK to have a zero-sized BB
-
-    #     B = BBox(((10., -34), (10., -34.0)))
-    #     self.failUnless(isinstance(B, BBox))
-
-    # def testMinMax5(self):
-
-    #     # OK to have a tiny BB
-
-    #     B = BBox(((0, 0), (1e-20, 5)))
-    #     self.failUnless(isinstance(B, BBox))
-
-    # def testMinMax6(self):
-
-    #     # Should catch tiny difference
-
-    #     self.failUnlessRaises(ValueError, BBox, ((0, 0), (-1e-20, 5)))
+    def testMinMax6(self):
+        # Should catch tiny difference
+        with pytest.raises(ValueError):
+            BBox(((0, 0), (-1e-20, 5)))
 
 
-class testAsBBox(unittest.TestCase):
+class TestAsBBox():
 
     def testPassThrough(self):
         B = BBox(((0, 0), (5, 5)))
         C = asBBox(B)
-        self.failUnless(B is C)
+        assert B is C
 
     def testPassThrough2(self):
         B = ((0, 0), (5, 5))
         C = asBBox(B)
-        self.failIf(B is C)
+        assert B is not C
 
     def testPassArray(self):
-
         # Different data type
-
         A = np.array(((0, 0), (5, 5)))
         C = asBBox(A)
-        self.failIf(A is C)
+        assert A is not C
 
     def testPassArray2(self):
-
         # same data type -- should be a view
-
         A = np.array(((0, 0), (5, 5)), np.float_)
         C = asBBox(A)
         A[0, 0] = -10
-        self.failUnless(C[0, 0] == A[0, 0])
+        assert C[0, 0] == A[0, 0]
 
 
 class testIntersect(unittest.TestCase):
@@ -117,87 +112,87 @@ class testIntersect(unittest.TestCase):
     def testSame(self):
         B = BBox(((-23.5, 456), (56, 532.0)))
         C = BBox(((-23.5, 456), (56, 532.0)))
-        self.failUnless(B.Overlaps(C))
+        assert B.Overlaps(C)
 
     def testUpperLeft(self):
         B = BBox(((5, 10), (15, 25)))
         C = BBox(((0, 12), (10, 32.0)))
-        self.failUnless(B.Overlaps(C))
+        assert B.Overlaps(C)
 
     def testUpperRight(self):
         B = BBox(((5, 10), (15, 25)))
         C = BBox(((12, 12), (25, 32.0)))
-        self.failUnless(B.Overlaps(C))
+        assert B.Overlaps(C)
 
     def testLowerRight(self):
         B = BBox(((5, 10), (15, 25)))
         C = BBox(((12, 5), (25, 15)))
-        self.failUnless(B.Overlaps(C))
+        assert B.Overlaps(C)
 
     def testLowerLeft(self):
         B = BBox(((5, 10), (15, 25)))
         C = BBox(((-10, 5), (8.5, 15)))
-        self.failUnless(B.Overlaps(C))
+        assert B.Overlaps(C)
 
     def testBelow(self):
         B = BBox(((5, 10), (15, 25)))
         C = BBox(((-10, 5), (8.5, 9.2)))
-        self.failIf(B.Overlaps(C))
+        assert not B.Overlaps(C)
 
     def testAbove(self):
         B = BBox(((5, 10), (15, 25)))
         C = BBox(((-10, 25.001), (8.5, 32)))
-        self.failIf(B.Overlaps(C))
+        assert not B.Overlaps(C)
 
     def testLeft(self):
         B = BBox(((5, 10), (15, 25)))
         C = BBox(((4, 8), (4.95, 32)))
-        self.failIf(B.Overlaps(C))
+        assert not B.Overlaps(C)
 
     def testRight(self):
         B = BBox(((5, 10), (15, 25)))
         C = BBox(((17.1, 8), (17.95, 32)))
-        self.failIf(B.Overlaps(C))
+        assert not B.Overlaps(C)
 
     def testInside(self):
         B = BBox(((-15, -25), (-5, -10)))
         C = BBox(((-12, -22), (-6, -8)))
-        self.failUnless(B.Overlaps(C))
+        assert B.Overlaps(C)
 
     def testOutside(self):
         B = BBox(((-15, -25), (-5, -10)))
         C = BBox(((-17, -26), (3, 0)))
-        self.failUnless(B.Overlaps(C))
+        assert B.Overlaps(C)
 
     def testTouch(self):
         B = BBox(((5, 10), (15, 25)))
         C = BBox(((15, 8), (17.95, 32)))
-        self.failUnless(B.Overlaps(C))
+        assert B.Overlaps(C)
 
     def testCorner(self):
         B = BBox(((5, 10), (15, 25)))
         C = BBox(((15, 25), (17.95, 32)))
-        self.failUnless(B.Overlaps(C))
+        assert B.Overlaps(C)
 
     def testZeroSize(self):
         B = BBox(((5, 10), (15, 25)))
         C = BBox(((15, 25), (15, 25)))
-        self.failUnless(B.Overlaps(C))
+        assert B.Overlaps(C)
 
     def testZeroSize2(self):
         B = BBox(((5, 10), (5, 10)))
         C = BBox(((15, 25), (15, 25)))
-        self.failIf(B.Overlaps(C))
+        assert not B.Overlaps(C)
 
     def testZeroSize3(self):
         B = BBox(((5, 10), (5, 10)))
         C = BBox(((0, 8), (10, 12)))
-        self.failUnless(B.Overlaps(C))
+        assert B.Overlaps(C)
 
     def testZeroSize4(self):
         B = BBox(((5, 1), (10, 25)))
         C = BBox(((8, 8), (8, 8)))
-        self.failUnless(B.Overlaps(C))
+        assert B.Overlaps(C)
 
 
 class testEquality(unittest.TestCase):
