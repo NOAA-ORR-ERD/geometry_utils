@@ -191,17 +191,21 @@ class BBox(np.ndarray):
     # Save the ndarray __eq__ for internal use.
     Array__eq__ = np.ndarray.__eq__
 
-    def __eq__(self, BB):
+    def __eq__(self, other):
         """
         __eq__(BB) The equality operator
 
         A == B if and only if all the entries are the same
         """
-        if self.IsNull() and np.isnan(BB).all():
+        if self.IsNull() and np.isnan(other).all():
             # BB may be a regular array, so I can't use IsNull
             return True
         else:
-            return self.Array__eq__(BB).all()
+            return self.Array__eq__(other).all()
+
+    def __ne__(self, other):
+
+        return not self.__eq__(other)
 
 
 def asBBox(data):

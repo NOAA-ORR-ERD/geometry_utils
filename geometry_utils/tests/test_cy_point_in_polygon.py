@@ -12,7 +12,7 @@ import pytest
 import numpy as np
 
 
-from gnome.utilities.geometry import point_in_poly, points_in_poly
+from geometry_utils import point_in_poly, points_in_poly
 
 poly1_ccw = np.array((
     (-5, -2),
@@ -134,7 +134,7 @@ def test_point_on_vertex(point):
 
     p1 = point_in_poly(poly1_ccw, np.asarray(point, dtype=np.float64))
     p2 = point_in_poly(poly2_ccw, np.asarray(point, dtype=np.float64))
-    print
+
     assert p1 ^ p2  # bitwise xor -- these should be integer 1 or 0
 
 
@@ -148,7 +148,7 @@ def test_non_contiguous_poly():
     # make non-contiguous
 
     poly = poly[:, 2:]
-    print poly.flags
+    print(poly.flags)
 
     with pytest.raises(ValueError):
         point_in_poly(poly, (3, 4))
