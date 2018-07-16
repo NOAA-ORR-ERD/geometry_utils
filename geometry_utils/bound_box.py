@@ -1,10 +1,14 @@
 """
 A Bounding Box object and assorted utilities , subclassed from a numpy array
 
+Also -- is this simple a rectangle class?
+
 FIXME: The constructor functions should be class methods.
        It would be good to PEP8 the method names.
 
+TODO:  Cythonizing this could speed things up -- which could be nice.
 """
+
 import numpy as np
 
 
@@ -45,7 +49,7 @@ class BBox(np.ndarray):
 
         and
 
-        fromPoints
+        from_points
         """
         arr = np.array(data, np.float64)
         arr.shape = (2, 2)
@@ -228,20 +232,22 @@ def asBBox(data):
                               buffer=arr)
 
 
-def fromPoints(Points):
+def from_points(points):
     """
-    fromPoints (Points).
+    from_points (points).
 
-    reruns the bounding box of the set of points in Points. Points can
+    reruns the bounding box of the set of points in points. points can
     be any python object that can be turned into a numpy NX2 array of float64s.
 
     If a single point is passed in, a zero-size Bounding Box is returned.
     """
-    Points = np.asarray(Points, np.float64).reshape(-1, 2)
+    points = np.asarray(points, np.float64).reshape(-1, 2)
 
-    arr = np.vstack((Points.min(0), Points.max(0)))
+    arr = np.vstack((points.min(0), points.max(0)))
 
-    return np.ndarray.__new__(BBox, shape=arr.shape, dtype=arr.dtype,
+    return np.ndarray.__new__(BBox,
+                              shape=arr.shape,
+                              dtype=arr.dtype,
                               buffer=arr)
 
 

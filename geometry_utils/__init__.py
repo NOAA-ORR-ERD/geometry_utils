@@ -12,10 +12,6 @@ i.e. a polygon is expressed as a Nx2 numpy array of float64
 Some of these are in Cython for speed.
 """
 
-from .cy_point_in_polygon import point_in_poly, points_in_poly
-
-from .poly_clockwise import is_clockwise_convex, is_clockwise
-
 from .polygons import (polygon_inside,
                        polygon_area,
                        polygon_rotation,
