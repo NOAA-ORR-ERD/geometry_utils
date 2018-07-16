@@ -254,25 +254,25 @@ poly1 = np.array(((0, 0), (0, 1), (1, 1), (1, 0)), np.float64)
 
 
 def test_points_in_poly_scalar():
-    assert points_in_poly(poly1, (0.5, 0.5, 0.0)) is True
-    assert points_in_poly(poly1, (1.5, 0.5, 0.0)) is False
+    assert points_in_poly(poly1, (0.5, 0.5)) is True
+    assert points_in_poly(poly1, (1.5, 0.5)) is False
 
 
 def test_points_in_poly_array_one_element():
-    assert np.array_equal(points_in_poly(poly1, ((0.5, 0.5, 0.0), )),
+    assert np.array_equal(points_in_poly(poly1, ((0.5, 0.5), )),
                           np.array((True, )))
-    assert np.array_equal(points_in_poly(poly1, ((1.5, -0.5, 0.0), )),
+    assert np.array_equal(points_in_poly(poly1, ((1.5, -0.5), )),
                           np.array((False, )))
 
 
 def test_points_in_poly_array():
     points = np.array((
-        (0.5, 0.5, 0.0),
-        (1.5, 0.5, 0.0),
-        (0.5, 0.5, 0.0),
-        (0.5, 0.5, 0.0),
-        (-0.5, 0.5, 0.0),
-        (0.5, 0.5, 0.0),
+        (0.5, 0.5),
+        (1.5, 0.5),
+        (0.5, 0.5),
+        (0.5, 0.5),
+        (-0.5, 0.5),
+        (0.5, 0.5),
         ))
 
     result = np.array((

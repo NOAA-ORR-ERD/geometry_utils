@@ -19,7 +19,7 @@ http://paulbourke.net/geometry/clockwise/
 
 def is_clockwise(poly):
     """
-    returns True if the polygon is clockwise ordered, false if not
+    Returns True if the polygon is clockwise ordered, false if not
 
     expects a sequence of tuples, or something like it (Nx2 array for instance),
     of the points:
@@ -30,13 +30,13 @@ def is_clockwise(poly):
     """
 
     total = poly[-1][0] * poly[0][1] - poly[0][0] * poly[-1][1]  # last point to first point
-    for i in xrange(len(poly) - 1):
+    for i in range(len(poly) - 1):
         total += poly[i][0] * poly[i + 1][1] - poly[i + 1][0] * poly[i][1]
 
     if total <= 0:
-        return True
+        return 1
     else:
-        return False
+        return 0
 
 
 def is_clockwise_convex(poly):
@@ -61,6 +61,6 @@ def is_clockwise_convex(poly):
 
     cp = (x1 - x0) * (y2 - y1) - (y1 - y0) * (x2 - x1)
     if cp <= 0:
-        return True
+        return 1
     else:
-        return False
+        return 0
