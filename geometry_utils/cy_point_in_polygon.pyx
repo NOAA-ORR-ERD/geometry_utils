@@ -1,9 +1,11 @@
-#!/usr/bin/env python
 
 """
 Cython code to call C point in poly routine
 
 Should I just port the C to Cython???
+
+And a polygon_area function
+
 """
 
 
@@ -55,7 +57,7 @@ def points_in_poly(cnp.ndarray[double, ndim=2, mode="c"] pgon, points):
     """
     compute whether the points given are in the polygon defined in pgon.
 
-    :param pgon: the vertices of teh polygon
+    :param pgon: the vertices of the polygon
     :type pgon: NX2 numpy array of floats
 
     :param points: the points to test
@@ -63,10 +65,7 @@ def points_in_poly(cnp.ndarray[double, ndim=2, mode="c"] pgon, points):
 
     :returns: a boolean array the same length as points
               if the input is a single point, the result is a
-              scalr python boolean
-
-    Note: this version takes a 3-d point, even though the third coord
-          is ignored.
+              scalar python boolean
     """
 
     np_points = np.ascontiguousarray(points, dtype=np.float64)
@@ -86,14 +85,16 @@ def points_in_poly(cnp.ndarray[double, ndim=2, mode="c"] pgon, points):
 
     for i in range(npoints):
         result[i] = c_point_in_poly1(nvert, &pgon[0, 0], &a_points[i, 0])
+
     if scalar:
         return bool(result[0])  # to make it a regular python bool
     else:
         return result.view(dtype=np.bool)  # make it a np.bool array
 
-
+@cython.boundscheck(False)
+@cython.wraparound(False)
 def points_in_polys(cnp.ndarray[double, ndim=3, mode="c"] pgons,
-                    cnp.ndarray[double,ndim=2,mode="c"] points):
+                    cnp.ndarray[double, ndim=2, mode="c"] points):
     """
     Determine if a list of points is inside a list of polygons, in a one-to-one fashion.
 
@@ -104,19 +105,48 @@ def points_in_polys(cnp.ndarray[double, ndim=3, mode="c"] pgons,
     :type points: NX2 numpy array of (x, y) floats
 
     :returns: a boolean array of length N
-
-    Note: this version takes a 3-d point, even though the third coord
-          is ignored.
     """
-
-    cdef cnp.ndarray[char,ndim=1,mode="c"] result = np.zeros((points.shape[0],), dtype=np.uint8)
     cdef unsigned int i, N, M
+    cdef cnp.ndarray[char, ndim=1, mode="c"] result
+
+    result = np.zeros((points.shape[0],), dtype=np.uint8)
+
     M = pgons.shape[1]
     N = pgons.shape[0]
 
     for i in range(N):
-        result[i] = c_point_in_poly1(M, &pgons[i,0,0], &points[i,0])
+        result[i] = c_point_in_poly1(M, &pgons[i, 0, 0], &points[i, 0])
+
     return result.view(dtype=np.bool)
 
 
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def signed_area(cnp.ndarray[double, ndim=2, mode="c"] polygon_verts):
+    """
+    Compute the signed area of the polygon defined by the vertices in pgon
+
+    :param polygon_verts: the vertices of the polygon
+    :type polygon_verts: NX2 numpy array of floats
+
+    :returns: area of the polygon as a float64
+
+    See: http://paulbourke.net/geometry/clockwise/
+    """
+
+    cdef unsigned int i, nvert
+    cdef double total
+
+    nvert = polygon_verts.shape[0]
+
+    total = ((polygon_verts[nvert - 1, 0] * polygon_verts[0, 1]) -
+             (polygon_verts[0, 0] * polygon_verts[nvert - 1, 1])
+             )  # last point to first point
+
+    for i in range(nvert - 1):
+        total += ((polygon_verts[i, 0] * polygon_verts[i + 1, 1]) -
+                  (polygon_verts[i + 1, 0] * polygon_verts[i, 1])
+                  )
+
+    return total / 2.0
 

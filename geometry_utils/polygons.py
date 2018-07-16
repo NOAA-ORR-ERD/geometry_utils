@@ -6,9 +6,8 @@ Single module to hold the high-level API
 
 import numpy as np
 
-from .cy_point_in_polygon import point_in_poly, points_in_poly
+from .cy_point_in_polygon import points_in_poly, points_in_polys, signed_area
 
-from .poly_clockwise import is_clockwise
 
 def polygon_inside(polygon_verts, trial_points):
     '''
@@ -42,18 +41,21 @@ def polygon_area(polygon_verts):
     See: http://paulbourke.net/geometry/clockwise/
     """
 
-    # note: this is the exact same code as the clockwise code.
-    #       they should both be cythonized and used in one place.
+    # # note: this is the exact same code as the clockwise code.
+    # #       they should both be cythonized and used in one place.
+
+    # polygon_verts = np.asarray(polygon_verts, np.float64)
+    # total = (polygon_verts[-1, 0] * polygon_verts[0, 1] -
+    #          polygon_verts[0, 0] * polygon_verts[-1, 1])  # last point to first point
+
+    # for i in range(len(polygon_verts) - 1):
+    #     total += (polygon_verts[i, 0] * polygon_verts[i + 1, 1] -
+    #               polygon_verts[i + 1, 0] * polygon_verts[i, 1])
+
+    # return abs(total / 2.0)
 
     polygon_verts = np.asarray(polygon_verts, np.float64)
-    total = (polygon_verts[-1, 0] * polygon_verts[0, 1] -
-             polygon_verts[0, 0] * polygon_verts[-1, 1])  # last point to first point
-
-    for i in range(len(polygon_verts) - 1):
-        total += (polygon_verts[i, 0] * polygon_verts[i + 1, 1] -
-                  polygon_verts[i + 1, 0] * polygon_verts[i, 1])
-
-    return abs(total / 2.0)
+    return abs(signed_area(polygon_verts))
 
 
 def polygon_issimple(polygon_verts):
@@ -89,9 +91,18 @@ def polygon_rotation(polygon_verts, convex=False):
                0 for a negative rotation according to the right hand rule
 
               Note, only defined for a simple polygon. Raises error if not simple.
-    '''
 
-    return is_clockwise(polygon_verts)
+    '''
+    # fixme: need test for simpile polygon!
+
+    polygon_verts = np.asarray(polygon_verts, np.float64)
+    s_a = signed_area(polygon_verts)
+    if s_a < 0:
+        return 1
+    elif s_a > 0:
+        return 0
+    else:
+        raise ValueError("can't compute rotation of a zero-area polygon")
 
 
 def polygon_centroid(polygon_verts):
