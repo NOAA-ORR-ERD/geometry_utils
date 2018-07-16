@@ -2,7 +2,6 @@
 
 """
 Test code for the BBox Object
-
 """
 
 import numpy as np

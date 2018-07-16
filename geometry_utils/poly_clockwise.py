@@ -16,6 +16,8 @@ http://paulbourke.net/geometry/clockwise/
 
 """
 
+import numpy as np
+
 
 def is_clockwise(poly):
     """
@@ -28,10 +30,10 @@ def is_clockwise(poly):
 
     See: http://paulbourke.net/geometry/clockwise/
     """
-
-    total = poly[-1][0] * poly[0][1] - poly[0][0] * poly[-1][1]  # last point to first point
+    poly = np.asarray(poly, dtype=np.float64)
+    total = poly[-1, 0] * poly[0, 1] - poly[0, 0] * poly[-1, 1]  # last point to first point
     for i in range(len(poly) - 1):
-        total += poly[i][0] * poly[i + 1][1] - poly[i + 1][0] * poly[i][1]
+        total += poly[i, 0] * poly[i + 1, 1] - poly[i + 1, 0] * poly[i, 1]
 
     if total <= 0:
         return 1
@@ -51,13 +53,14 @@ def is_clockwise_convex(poly):
 
     http://paulbourke.net/geometry/clockwise/
     """
+    poly = np.asarray(poly, dtype=np.float64)
 
-    x0 = poly[0][0]
-    y0 = poly[0][1]
-    x1 = poly[1][0]
-    y1 = poly[1][1]
-    x2 = poly[2][0]
-    y2 = poly[2][1]
+    x0 = poly[0, 0]
+    y0 = poly[0, 1]
+    x1 = poly[1, 0]
+    y1 = poly[1, 1]
+    x2 = poly[2, 0]
+    y2 = poly[2, 1]
 
     cp = (x1 - x0) * (y2 - y1) - (y1 - y0) * (x2 - x1)
     if cp <= 0:

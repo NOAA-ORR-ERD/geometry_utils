@@ -45,12 +45,13 @@ def polygon_area(polygon_verts):
     # note: this is the exact same code as the clockwise code.
     #       they should both be cythonized and used in one place.
 
-    total = (polygon_verts[-1][0] * polygon_verts[0][1] -
-             polygon_verts[0][0] * polygon_verts[-1][1])  # last point to first point
+    polygon_verts = np.asarray(polygon_verts, np.float64)
+    total = (polygon_verts[-1, 0] * polygon_verts[0, 1] -
+             polygon_verts[0, 0] * polygon_verts[-1, 1])  # last point to first point
 
     for i in range(len(polygon_verts) - 1):
-        total += (polygon_verts[i][0] * polygon_verts[i + 1][1] -
-                  polygon_verts[i + 1][0] * polygon_verts[i][1])
+        total += (polygon_verts[i, 0] * polygon_verts[i + 1, 1] -
+                  polygon_verts[i + 1, 0] * polygon_verts[i, 1])
 
     return abs(total / 2.0)
 
