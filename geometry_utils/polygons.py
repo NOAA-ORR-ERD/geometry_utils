@@ -6,7 +6,9 @@ Single module to hold the high-level API
 
 import numpy as np
 
-from .cy_point_in_polygon import points_in_poly, points_in_polys, signed_area
+from .cy_point_in_polygon import points_in_poly,
+                                 points_in_polys,
+                                 signed_area
 
 
 def polygon_inside(polygon_verts, trial_points):
