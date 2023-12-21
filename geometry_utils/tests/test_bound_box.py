@@ -28,7 +28,7 @@ class TestConstructors():
 
     def testDataType(self):
         B = BBox(((0, 0), (5, 5)))
-        assert B.dtype == np.float
+        assert B.dtype == np.float64
 
     def testShape(self):
         B = BBox((0, 0, 5, 5))
@@ -43,7 +43,7 @@ class TestConstructors():
             BBox((0, 0, 5, 6, 7))
 
     def testArrayConstruction(self):
-        A = np.array(((4, 5), (10, 12)), np.float_)
+        A = np.array(((4, 5), (10, 12)), np.float64)
         B = BBox(A)
         assert isinstance(B, BBox)
 
@@ -97,7 +97,7 @@ class TestAsBBox():
 
     def testPassArray2(self):
         # same data type -- should be a view
-        A = np.array(((0, 0), (5, 5)), np.float_)
+        A = np.array(((0, 0), (5, 5)), np.float64)
         C = asBBox(A)
         A[0, 0] = -10
         assert C[0, 0] == A[0, 0]
@@ -379,7 +379,7 @@ class Test_from_points():
                 B[1, 1] == 6.0)
 
     def testSinglePoint(self):
-        Pts = np.array((5, 2), np.float_)
+        Pts = np.array((5, 2), np.float64)
         B = from_points(Pts)
         assert (B[0, 0] == 5. and
                 B[0, 1] == 2.0 and
@@ -387,13 +387,12 @@ class Test_from_points():
                 B[1, 1] == 2.0)
 
     def testListTuples(self):
-        Pts = [(3, 6.5), (13, 43.2), (-4.32, -4), (65, -23), (-0.0001,
-               23.432)]
+        Pts = [(3, 6.5), (13, 43.2), (-4.32, -4), (65, -23), (-0.0001, 23.432)]
         B = from_points(Pts)
-        assert (B[0, 0] == -4.32 and
-                B[0, 1] == -23.0 and
-                B[1, 0] == 65.0 and
-                B[1, 1] == 43.2)
+        assert (B[0, 0] == -4.32
+                and B[0, 1] == -23.0
+                and B[1, 0] == 65.0
+                and B[1, 1] == 43.2)
 
 
 class TestMerge():
@@ -459,7 +458,7 @@ class TestBBarray():
 
     BBarray = np.array((((-23.5, 456), (56, 532.0)), ((-20.3, 460),
                        (54, 465)), ((-23.5, 456), (58, 540.)), ((-26.5,
-                       12), (56, 532.0))), dtype=np.float)
+                       12), (56, 532.0))), dtype=np.float64)
     BB = asBBox(((-26.5, 12.), (58., 540.)))
 
     def testJoin(self):
@@ -474,7 +473,7 @@ class TestNullBBox():
     B3 = BBox(((1.0, 2.0), (5., 10.)))
 
     def testValues(self):
-        assert (np.alltrue(np.isnan(self.B1)))
+        assert (np.all(np.isnan(self.B1)))
 
     def testIsNull(self):
         assert (self.B1.IsNull)
@@ -508,7 +507,7 @@ class TestInfBBox():
     NB = NullBBox()
 
     def testValues(self):
-        assert (np.alltrue(np.isinf(self.B1)))
+        assert (np.all(np.isinf(self.B1)))
 
 #    def testIsNull(self):
 #        assert ( self.B1.IsNull )

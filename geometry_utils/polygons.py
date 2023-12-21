@@ -1,14 +1,15 @@
 #!/usr/bin/env python
 
 """
-Single module to hold the high-level API
+Single module to hold the high-level API for working with polygons
 """
 
 import numpy as np
 
-from .cy_point_in_polygon import points_in_poly,
-                                 points_in_polys,
-                                 signed_area
+from .cy_point_in_polygon import (points_in_poly,
+                                  points_in_polys,
+                                  signed_area,
+                                  )
 
 
 def polygon_inside(polygon_verts, trial_points):
@@ -26,8 +27,8 @@ def polygon_inside(polygon_verts, trial_points):
                     True if the trial point is inside the polygon
     '''
 
-    polygon_verts = np.asarray(polygon_verts, dtype=np.float)
-    trial_points = np.asarray(trial_points, dtype=np.float)
+    polygon_verts = np.asarray(polygon_verts, dtype=np.float64)
+    trial_points = np.asarray(trial_points, dtype=np.float64)
     return points_in_poly(polygon_verts, trial_points)
 
 
@@ -60,7 +61,7 @@ def polygon_area(polygon_verts):
     return abs(signed_area(polygon_verts))
 
 
-def polygon_issimple(polygon_verts):
+def polygon_is_simple(polygon_verts):
     '''
     Return true if the polygon is simple
 
@@ -92,10 +93,11 @@ def polygon_rotation(polygon_verts, convex=False):
                1 for a positive rotation according to the right-hand rule
                0 for a negative rotation according to the right hand rule
 
-              Note, only defined for a simple polygon. Raises error if not simple.
+               Note, only defined for a simple polygon. Behavior is undetermined
+               if the polygon has holes or crossing segments.
 
     '''
-    # fixme: need test for simpile polygon!
+    # fixme: need a test for a simple polygon!
 
     polygon_verts = np.asarray(polygon_verts, np.float64)
     s_a = signed_area(polygon_verts)
@@ -118,6 +120,54 @@ def polygon_centroid(polygon_verts):
     OUTPUT
     ------
     xy_centroid:  1x2
+
+    NOTE: possible implimentation:
+    https://lexrent.eu/wp-content/uploads/torza/artikel_groep_sub_2_docs/BYZ_3_Polygon-Area-and-Centroid.pdf
+    or
+    https://en.wikipedia.org/wiki/Centroid#Of_a_polygon
+
+    or, from:
+
+
+    https://stackoverflow.com/questions/2792443/finding-the-centroid-of-a-polygon
+
+    Here is Emile Cormier's algorithm without duplicated code or
+    expensive modulus operations, best of both worlds:
+
+    ::
+            int lastdex = vertexCount-1;
+            const Point2D* prev = &(vertices[lastdex]);
+            const Point2D* next;
+
+            // For all vertices in a loop
+            for (int i=0; i<vertexCount; ++i)
+            {
+                next = &(vertices[i]);
+                x0 = prev->x;
+                y0 = prev->y;
+                x1 = next->x;
+                y1 = next->y;
+                a = x0*y1 - x1*y0;
+                signedArea += a;
+                centroid.x += (x0 + x1)*a;
+                centroid.y += (y0 + y1)*a;
+                prev = next;
+            }
+
+            signedArea *= 0.5;
+            centroid.x /= (6.0*signedArea);
+            centroid.y /= (6.0*signedArea);
+
+            return centroid;
+        }
+
+        int main()
+        {
+            Point2D polygon[] = {{0.0,0.0}, {0.0,10.0}, {10.0,10.0}, {10.0,0.0}};
+            size_t vertexCount = sizeof(polygon) / sizeof(polygon[0]);
+            Point2D centroid = compute2DPolygonCentroid(polygon, vertexCount);
+            std::cout << "Centroid is (" << centroid.x << ", " << centroid.y << ")\n";
+        }
 
     '''
 

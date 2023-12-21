@@ -47,7 +47,7 @@ def test_polygon_inside_multiple_points():
 
     print(result)
 
-    assert np.alltrue(result == [False, True, False])
+    assert np.all(result == [False, True, False])
 
 
 def test_rotation_cw():
@@ -65,7 +65,7 @@ def test_rotation_zero_area():
 
 
 poly_areas = [([(0, 0), (0, 2.0), (4.0, 2.0), (4.0, 0.0)], 8.0),  # rectangle
-              ([(0, 0), (0, 2.0), (4.0, 2.0), (4.0, 0.0), (0, 0)], 8.0),  # duplicated point
+              ([(0, 0), (0, 2.0), (4.0, 2.0), (4.0, 0.0), (0, 0)], 8.0),  # duplicated end point
               ([(4, 0), (4, 2.0), (0.0, 2.0), (0.0, 0.0)], 8.0),  # rectangle
               ([(2, 2), (4, 10), (6, 2)], 16.0),  #  triangle
               ([(2, 2), (4, 10), (6, 2), (2, 2)], 16.0),  #  triangle
@@ -74,7 +74,6 @@ poly_areas = [([(0, 0), (0, 2.0), (4.0, 2.0), (4.0, 0.0)], 8.0),  # rectangle
 
 @pytest.mark.parametrize(('poly', 'area'), poly_areas)
 def test_polygon_area(poly, area):
-    # simple test for rectangle
     assert polygon_area(poly) == area
 
 
