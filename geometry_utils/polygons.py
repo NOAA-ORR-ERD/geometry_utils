@@ -6,10 +6,10 @@ Single module to hold the high-level API for working with polygons
 
 import numpy as np
 
-from .cy_polygons import (points_in_poly,
-                                  points_in_polys,
-                                  signed_area,
-                                  )
+# from .cy_polygons import (points_in_poly,
+#                           points_in_polys,
+#                           signed_area,
+#                           )
 from . import cy_polygons as cyp
 
 
@@ -30,7 +30,7 @@ def polygon_inside(polygon_verts, trial_points):
 
     polygon_verts = np.asarray(polygon_verts, dtype=np.float64)
     trial_points = np.asarray(trial_points, dtype=np.float64)
-    return points_in_poly(polygon_verts, trial_points)
+    return cyp.points_in_poly(polygon_verts, trial_points)
 
 
 def polygon_area(polygon_verts):
@@ -47,7 +47,7 @@ def polygon_area(polygon_verts):
     """
 
     polygon_verts = np.asarray(polygon_verts, np.float64)
-    return abs(signed_area(polygon_verts))
+    return abs(cyp.signed_area(polygon_verts))
 
 
 def polygon_is_simple(polygon_verts):
@@ -89,7 +89,7 @@ def polygon_rotation(polygon_verts, convex=False):
     # fixme: need a test for a simple polygon!
 
     polygon_verts = np.asarray(polygon_verts, np.float64)
-    s_a = signed_area(polygon_verts)
+    s_a = cyp.signed_area(polygon_verts)
     if s_a < 0:
         return 1
     elif s_a > 0:
