@@ -1,0 +1,7 @@
+# requirments for geometry_utils develpment
+
+python>=3.9,<3.13
+numpy
+cython
+pytest
+pytest-cov
