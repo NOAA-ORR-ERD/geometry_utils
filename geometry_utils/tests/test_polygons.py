@@ -11,6 +11,7 @@ from geometry_utils import (polygon_inside,
                             polygon_rotation,
                             polygon_area,
                             polygon_centroid,
+                            polygon_is_simple,
                             )
 # from geometry_utils.cy_polygons import polygon_centroid
 
@@ -122,5 +123,23 @@ def test_polygon_centroid(poly, result, name):
     print(f"{centroid=}")
     assert np.allclose(centroid, result)
 
+simple_polys = [
+               ([(5, 5), (5, 15), (15, 15), (15, 5)], 'square'), # simple square
+               ([[-2., -7.], [-6., -3.], [-2., -4.]],  "triangle"),  # same in negative coords
+               ([(-100, 0), (0, -100), (100, 0), (0, 100)], "diamond"),  # diamond around origin
+               # more complicated, with the centroid outside the polygon looks right, so preserved the result
+               ([(-700, 1000), (800, 1010), (1200, 200), (500, 900), (-600, 890), (-1300, -20)], 'complex'),
+                ]
+
+@pytest.mark.parametrize(('poly', 'name'), simple_polys)
+def test_polygon_is_simple_yes(poly, name):
+    """
+    tests simple polygons
+    """
+    assert polygon_is_simple(poly)
+
+#    assert False
 
 
+def test_polygon_is_simple_no():
+    pass

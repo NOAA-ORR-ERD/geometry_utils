@@ -16,4 +16,5 @@ from .polygons import (polygon_inside,
                        polygon_area,
                        polygon_rotation,
                        polygon_centroid,
+                       polygon_is_simple,
                        )

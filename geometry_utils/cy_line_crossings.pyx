@@ -50,17 +50,28 @@ cimport numpy as cnp
 #     return obj
 
 
-
-cpdef double cross_product(double x1, double x2, double y1, double y2):
+cdef inline double c_cross_product(double x1, double x2, double y1, double y2):
     """
     compute the cross product of two 2-d vectors
 
     used by side of line checks, etc.
-    :param x1, x2, y1, y2: coordintes of vectors
+    :param x1, x2, y1, y2: coordinates of vectors
     :type x1, x2, y1, y2: doubles (python floats)
     """
 
-    return (x1*y2 - y1*x2)
+    return (x1 * y2 - y1 * x2)
+
+
+def cross_product(double x1, double x2, double y1, double y2):
+    """
+    compute the cross product of two 2-d vectors
+
+    used by side of line checks, etc.
+    :param x1, x2, y1, y2: coordinates of vectors
+    :type x1, x2, y1, y2: python floats
+    """
+
+    return c_cross_product(x1, x2, y1, y2)
 
 
 cpdef double side_of_line(double x1, double y1,
@@ -93,14 +104,14 @@ cpdef double side_of_line(double x1, double y1,
     dxp = Px - x1
     dyp = Py - y1
 
-    return cross_product(dx, dy, dxp, dyp)
+    return c_cross_product(dx, dy, dxp, dyp)
 
 
 cdef int32_t c_segment_cross(double px1, double py1,
-                       double px2, double py2,
-                       double px3, double py3,
-                       double px4, double py4,
-                       ):
+                             double px2, double py2,
+                             double px3, double py3,
+                             double px4, double py4,
+                             ):
     """
     cython version of segment crossing.
 
@@ -109,36 +120,33 @@ cdef int32_t c_segment_cross(double px1, double py1,
     cdef double D1, D2
 
     #   Check to see if point 3 is to the left of segment 1
-  
 
-
-    D1 = side_of_line(px1,py1,px2,py2,px3,py3)
+    D1 = side_of_line(px1, py1, px2, py2, px3, py3)
 
     # Now check if point 4 is to the left of segment 1
-    D2 = side_of_line(px1,py1,px2,py2,px4,py4)
+    D2 = side_of_line(px1, py1, px2, py2, px4, py4)
 
     # if points 3 and 4 are on the same side of line 1
     # then they don't cross
 
-    if (D1*D2 > 0.0):
+    if (D1 * D2 > 0.0):
         return  0
 
     # now check the other way..      
     
     # Check to see if point 1 is to the left of segment 2 */
-    D1 = side_of_line(px3,py3,px4,py4,px1,py1)
+    D1 = side_of_line(px3, py3, px4, py4, px1, py1)
 
     # check if point 2 is to the left of segment 2
 
-    D2 = side_of_line(px3,py3,px4,py4,px2,py2);
+    D2 = side_of_line(px3, py3, px4, py4, px2, py2)
 
     # if points 1 and 2 are on the same side of line 2 then they don't cross
-  
-    if(D1*D2 > 0.0):
-       return 0
-    
+    if (D1 * D2 > 0.0):
+        return 0
     # if we get here, they cross
     return 1
+
 
 def segment_cross(s1, s2):
     """

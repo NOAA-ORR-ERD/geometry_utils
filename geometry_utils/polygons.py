@@ -11,6 +11,7 @@ import numpy as np
 #                           signed_area,
 #                           )
 from . import cy_polygons as cyp
+from .import cy_line_crossings as clc
 
 
 def polygon_inside(polygon_verts, trial_points):
@@ -55,12 +56,45 @@ def polygon_is_simple(polygon_verts):
     Return true if the polygon is simple
 
     i.e. has no crossing segments, etc.
+
+    NOTE: this version is naive, and O(N^2):
+
+    Possible better option:
+    Shamos-Hoey algorithm:
+    https://web.archive.org/web/20060613060645/http://softsurfer.com/Archive/algorithm_0108/algorithm_0108.htm#Test%20if%20Simple
     '''
 
-    # code
-    raise NotImplementedError
+    polygon_verts = np.asarray(polygon_verts)
 
-    # return issimple
+    # make sure first and final point are duplicated
+    # note: this does require an unfortunate reallocation
+    if not np.array_equal(polygon_verts[0], polygon_verts[1]):
+        polygon_verts = np.r_[polygon_verts, polygon_verts[:1]]
+    # loop through every line segment, and compare to every other one:
+    print(polygon_verts)
+    for i1 in range(len(polygon_verts) - 1):
+        print(f"{i1=}")
+        seg1 = (polygon_verts[i1, :], polygon_verts[i1 + 1, :])
+        for i2 in range(len(polygon_verts) - 1):  # never check against the final segment
+
+            print(f"{i2=}")
+            #  don't check against:
+            print(f"{len(polygon_verts) - 2=}")
+            print((i1 == 0) and (i2 == (len(polygon_verts) - 2)))
+            if ((i2 == i1)  # itself
+                or (i1 == 0) and (i2 == (len(polygon_verts) - 2))  # the start and end segments
+                or ((i1 == (len(polygon_verts) - 2)) and (i2 == 0))  # the start and end segments
+                or (i2 == i1 + 1)
+                or (i2 == i1 - 1)
+                ):
+                continue
+            seg2 = (polygon_verts[i2, :], polygon_verts[i2 + 1, :])
+            print(f"checking: {i1}, {i2}")
+            print(f"{seg1=}")
+            print(f"{seg2=}")
+            if clc.segment_cross(seg1, seg2):
+                return False
+    return True
 
 
 def polygon_rotation(polygon_verts, convex=False):
