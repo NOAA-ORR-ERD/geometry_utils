@@ -2,13 +2,27 @@
 test code for the polygons.py API
 """
 
+from pathlib import Path
+
 import numpy as np
 import pytest
 
 from geometry_utils import (polygon_inside,
                             polygon_rotation,
                             polygon_area,
+                            polygon_centroid,
                             )
+# from geometry_utils.cy_point_in_polygon import polygon_centroid
+
+try:
+    import matplotlib.pyplot as plt
+    HAVE_MPL = True
+    OUTPUT_DIR = Path(__file__).parent / "plots"
+    OUTPUT_DIR.mkdir(exist_ok=True)
+
+except ImportError:
+    HAVE_MPL = False
+
 
 # Example data
 
@@ -75,6 +89,38 @@ poly_areas = [([(0, 0), (0, 2.0), (4.0, 2.0), (4.0, 0.0)], 8.0),  # rectangle
 @pytest.mark.parametrize(('poly', 'area'), poly_areas)
 def test_polygon_area(poly, area):
     assert polygon_area(poly) == area
+
+polys = [([(5, 5), (5, 15), (15, 15), (15, 5)], (10, 10), 'square'), # simple square
+         ([(2, 7), (6, 3), (2, 4)], [3.33333333, 4.66666667], 'triangle'), # triangle
+         ([[-2., -7.], [-6., -3.], [-2., -4.]], [-3.33333333, -4.66666667], "triangle_2"),  # same in negative coords
+         ([(-100, 0), (0, -100), (100, 0), (0, 100)], (0.0, 0.0), "diamond"),  # diamond around origin
+         # more complicated, with the centroid outside the polygon looks right, so preserved the result
+         ([(-700, 1000), (800, 1010), (1200, 200), (500, 900), (-600, 890), (-1300, -20)], (126.43211, 781.0239), 'outside'),
+         ]
+
+@pytest.mark.parametrize(('poly', 'result', 'name'), polys)
+def test_polygon_centroid(poly, result, name):
+
+    centroid = polygon_centroid(poly)
+    print(f"{poly=}")
+    print(f"{centroid=}")
+
+    # duplicate the end point -- should be the same
+    poly.append(poly[0])
+    # plot before the assert, in case it fails
+    if HAVE_MPL:
+        poly = np.asarray(poly)
+        fig, ax = plt.subplots()
+        ax.plot(poly[:, 0], poly[:, 1], '-o')
+        ax.plot(centroid[0], centroid[1], 'ro')
+        fig.savefig(OUTPUT_DIR / f"centroid_{name}.png")
+
+    assert np.allclose(centroid, result)
+
+    centroid = polygon_centroid(poly)
+    print(f"{poly=}")
+    print(f"{centroid=}")
+    assert np.allclose(centroid, result)
 
 
 

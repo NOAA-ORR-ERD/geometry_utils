@@ -8,7 +8,6 @@ And a polygon_area function
 
 """
 
-
 import cython
 # import both numpy and the Cython declarations for numpy
 import numpy as np
@@ -150,3 +149,54 @@ def signed_area(cnp.ndarray[double, ndim=2, mode="c"] polygon_verts):
 
     return total / 2.0
 
+@cython.boundscheck(False)
+@cython.wraparound(False)
+def polygon_centroid(cnp.ndarray[double, ndim=2, mode="c"] polygon_verts):
+    """
+    Return the (x, y) location of the polygon centroid
+
+    This is the "center of gravity" centroid -- it will not necessarily
+    fall inside the polygon for concave polygons.
+
+    INPUT
+    -----
+    polygon_verts:  (N,2) array of float64
+
+    OUTPUT
+    ------
+    xy_centroid:  (2,)
+
+    """
+
+    # this is computing the area and the centroids of each area segment at the
+    # same time so it is the same code as the area, with a bit of extra
+
+    cdef unsigned int i, nvert
+    cdef double area, a, x, y
+
+    nvert = polygon_verts.shape[0]
+    x = 0.0
+    y = 0.0
+
+    # last point to first point
+    # could probably do this by setting indexes smarter ...
+    # rather than duplicating code.
+    area = ((polygon_verts[nvert - 1, 0] * polygon_verts[0, 1])
+            - (polygon_verts[0, 0] * polygon_verts[nvert - 1, 1])
+            )
+    x += (polygon_verts[nvert - 1, 0] + polygon_verts[0, 0]) * area
+    y += (polygon_verts[nvert - 1, 1] + polygon_verts[0, 1]) * area
+
+    for i in range(nvert - 1):
+        a = ((polygon_verts[i, 0] * polygon_verts[i + 1, 1])
+             - (polygon_verts[i + 1, 0] * polygon_verts[i, 1])
+             )
+        area += a
+        x += (polygon_verts[i, 0] + polygon_verts[i + 1, 0]) * a
+        y += (polygon_verts[i, 1] + polygon_verts[i + 1, 1]) * a
+
+    area /= 2.0
+    x /= (6.0 * area)
+    y /= (6.0 * area)
+
+    return (x, y)
