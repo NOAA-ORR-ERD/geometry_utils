@@ -12,7 +12,7 @@ from geometry_utils import (polygon_inside,
                             polygon_area,
                             polygon_centroid,
                             )
-# from geometry_utils.cy_point_in_polygon import polygon_centroid
+# from geometry_utils.cy_polygons import polygon_centroid
 
 try:
     import matplotlib.pyplot as plt

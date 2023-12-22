@@ -6,11 +6,11 @@ Single module to hold the high-level API for working with polygons
 
 import numpy as np
 
-from .cy_point_in_polygon import (points_in_poly,
+from .cy_polygons import (points_in_poly,
                                   points_in_polys,
                                   signed_area,
                                   )
-from . import cy_point_in_polygon as cyp
+from . import cy_polygons as cyp
 
 
 def polygon_inside(polygon_verts, trial_points):
@@ -181,7 +181,7 @@ def polygon_centroid(polygon_verts):
     # }
 
     # this is computing the area and the centroids of each area segment at the same time
-    # so it is the same code as the area, witha bit of extra
+    # so it is the same code as the area, with a bit of extra
 
     polygon_verts = np.asarray(polygon_verts, np.float64)
     return cyp.polygon_centroid(polygon_verts)

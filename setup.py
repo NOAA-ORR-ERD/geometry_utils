@@ -9,8 +9,8 @@ import numpy  # for the includes for the Cython code
 requirements = ["numpy",
                 ]
 
-ext_modules = [Extension("geometry_utils.cy_point_in_polygon",
-                         sources=["geometry_utils/cy_point_in_polygon.pyx",
+ext_modules = [Extension("geometry_utils.cy_polygons",
+                         sources=["geometry_utils/cy_polygons.pyx",
                                   "geometry_utils/c_point_in_polygon.c"],
                          include_dirs=[numpy.get_include()]),
                ]
@@ -31,6 +31,6 @@ setup(
     install_requires=requirements,
     keywords='geometry_utils',
     classifiers=[
-        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3',
     ]
 )
