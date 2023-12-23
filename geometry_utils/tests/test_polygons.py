@@ -20,7 +20,6 @@ try:
     HAVE_MPL = True
     OUTPUT_DIR = Path(__file__).parent / "plots"
     OUTPUT_DIR.mkdir(exist_ok=True)
-
 except ImportError:
     HAVE_MPL = False
 
@@ -136,10 +135,38 @@ def test_polygon_is_simple_yes(poly, name):
     """
     tests simple polygons
     """
+    if HAVE_MPL:
+        plot_poly(poly, OUTPUT_DIR / f"not_intersecting_{name}.png")
+
     assert polygon_is_simple(poly)
 
 #    assert False
 
+intersecting_polys = [
+               # ([(5, 5), (15, 15), (5, 15),  (15, 5)], 'AnX'), # simple square
+               ([[-2., -7.], [-6., -3.], [-2., -7.]],  "zero_area_triangle"),  # triangle can only be bad if points repeat.
+               # ([(0, -100), (-100, 0), (100, 0), (0, 100)], "diamond"),  # diamond around origin
+               # # # more complicated, with the centroid outside the polygon looks right, so preserved the result
+               # ([(-700, 1000), (800, 1010), (1200, 200), (1100, 900), (-600, 890), (-1300, -20)], 'complex'),
+               # # duplicated point
+               # ([(5, 5), (5, 15), (5, 15), (15, 15), (15, 5)], "duplicated_point"),
+                ]
 
-def test_polygon_is_simple_no():
-    pass
+@pytest.mark.parametrize(('poly', 'name'), intersecting_polys)
+def test_polygon_is_simple_no(poly, name):
+    """
+    tests simple polygons
+    """
+    if HAVE_MPL:
+        plot_poly(poly, OUTPUT_DIR / f"intersecting_{name}.png")
+
+    assert not polygon_is_simple(poly)
+    # assert False
+
+# plotting utility
+def plot_poly(poly, filename):
+    poly = np.asarray(poly)
+    fig, ax = plt.subplots()
+    ax.plot(poly[:, 0], poly[:, 1], '-o')
+    ax.plot([poly[-1, 0], poly[0, 0]], [poly[-1, 1], poly[0, 1]], 'r-')
+    fig.savefig(filename)

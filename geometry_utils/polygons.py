@@ -68,30 +68,26 @@ def polygon_is_simple(polygon_verts):
 
     # make sure first and final point are duplicated
     # note: this does require an unfortunate reallocation
-    if not np.array_equal(polygon_verts[0], polygon_verts[1]):
+    # maybe deal with last segment separately?
+    if not np.array_equal(polygon_verts[0], polygon_verts[-1]):
         polygon_verts = np.r_[polygon_verts, polygon_verts[:1]]
     # loop through every line segment, and compare to every other one:
-    print(polygon_verts)
     for i1 in range(len(polygon_verts) - 1):
-        print(f"{i1=}")
         seg1 = (polygon_verts[i1, :], polygon_verts[i1 + 1, :])
-        for i2 in range(len(polygon_verts) - 1):  # never check against the final segment
-
-            print(f"{i2=}")
-            #  don't check against:
-            print(f"{len(polygon_verts) - 2=}")
-            print((i1 == 0) and (i2 == (len(polygon_verts) - 2)))
-            if ((i2 == i1)  # itself
-                or (i1 == 0) and (i2 == (len(polygon_verts) - 2))  # the start and end segments
-                or ((i1 == (len(polygon_verts) - 2)) and (i2 == 0))  # the start and end segments
-                or (i2 == i1 + 1)
-                or (i2 == i1 - 1)
-                ):
+        for i2 in range(i1 + 1, len(polygon_verts) - 1):
+            if (i2 == i1 + 1):
+                # check for degenerate segment
+                if np.array_equal(polygon_verts[i1, :], polygon_verts[i1 + 2, :],):
+                    return False
+                continue
+            elif (i1 == 0) and (i2 == (len(polygon_verts) - 2)):  # the start and end segments
+                # never occurs
+                # the start and end segments
+                # or ((i1 == (len(polygon_verts) - 2)) and (i2 == 0))
+                # or (i2 == i1 - 1)
+                # ):
                 continue
             seg2 = (polygon_verts[i2, :], polygon_verts[i2 + 1, :])
-            print(f"checking: {i1}, {i2}")
-            print(f"{seg1=}")
-            print(f"{seg2=}")
             if clc.segment_cross(seg1, seg2):
                 return False
     return True
@@ -147,103 +143,13 @@ def polygon_centroid(polygon_verts):
     ------
     xy_centroid:  (2,)
 
-    NOTE: possible implimentation:
-    https://lexrent.eu/wp-content/uploads/torza/artikel_groep_sub_2_docs/BYZ_3_Polygon-Area-and-Centroid.pdf
-    or
-    https://en.wikipedia.org/wiki/Centroid#Of_a_polygon
-
-    """
-    # from:
-
+    NOTE: implimentation from:
     # https://stackoverflow.com/questions/2792443/finding-the-centroid-of-a-polygon
-
-    # Here is Emile Cormier's algorithm without duplicated code or
-    # expensive modulus operations, best of both worlds:
-
-    # #include <iostream>
-
-    # using namespace std;
-
-    # struct Point2D
-    # {
-    #     double x;
-    #     double y;
-    # };
-
-    # Point2D compute2DPolygonCentroid(const Point2D* vertices, int vertexCount)
-    # {
-    #     Point2D centroid = {0, 0};
-    #     double signedArea = 0.0;
-    #     double x0 = 0.0; // Current vertex X
-    #     double y0 = 0.0; // Current vertex Y
-    #     double x1 = 0.0; // Next vertex X
-    #     double y1 = 0.0; // Next vertex Y
-    #     double a = 0.0;  // Partial signed area
-
-    #     int lastdex = vertexCount-1;
-    #     const Point2D* prev = &(vertices[lastdex]);
-    #     const Point2D* next;
-
-    #     // For all vertices in a loop
-    #     for (int i=0; i<vertexCount; ++i)
-    #     {
-    #         next = &(vertices[i]);
-    #         x0 = prev->x;
-    #         y0 = prev->y;
-    #         x1 = next->x;
-    #         y1 = next->y;
-    #         a = x0*y1 - x1*y0;
-    #         signedArea += a;
-    #         centroid.x += (x0 + x1)*a;
-    #         centroid.y += (y0 + y1)*a;
-    #         prev = next;
-    #     }
-
-    #     signedArea *= 0.5;
-    #     centroid.x /= (6.0*signedArea);
-    #     centroid.y /= (6.0*signedArea);
-
-    #     return centroid;
-    # }
-
-    # int main()
-    # {
-    #     Point2D polygon[] = {{0.0,0.0}, {0.0,10.0}, {10.0,10.0}, {10.0,0.0}};
-    #     size_t vertexCount = sizeof(polygon) / sizeof(polygon[0]);
-    #     Point2D centroid = compute2DPolygonCentroid(polygon, vertexCount);
-    #     std::cout << "Centroid is (" << centroid.x << ", " << centroid.y << ")\n";
-    # }
-
-    # this is computing the area and the centroids of each area segment at the same time
-    # so it is the same code as the area, with a bit of extra
+    """
 
     polygon_verts = np.asarray(polygon_verts, np.float64)
     return cyp.polygon_centroid(polygon_verts)
 
-    # # python version -- not very different
-    # nvert = polygon_verts.shape[0]
-    # x = 0.0
-    # y = 0.0
-
-    # area = ((polygon_verts[nvert - 1, 0] * polygon_verts[0, 1]) -
-    #          (polygon_verts[0, 0] * polygon_verts[nvert - 1, 1])
-    #          )  # last point to first point
-    # x += (polygon_verts[nvert - 1, 0] + polygon_verts[0, 0]) * area
-    # y += (polygon_verts[nvert - 1, 1] + polygon_verts[0, 1]) * area
-
-    # for i in range(nvert - 1):
-    #     a = ((polygon_verts[i, 0] * polygon_verts[i + 1, 1]) -
-    #               (polygon_verts[i + 1, 0] * polygon_verts[i, 1])
-    #               )
-    #     area += a
-    #     x += (polygon_verts[i, 0] + polygon_verts[i + 1, 0]) * a
-    #     y += (polygon_verts[i, 1] + polygon_verts[i + 1, 1]) * a
-
-    # area /= 2.0
-    # x /= (6.0 * area)
-    # y /= (6.0 * area)
-
-    # return (x, y)
 
 
 
