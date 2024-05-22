@@ -21,18 +21,5 @@ ext_modules = [Extension("geometry_utils.cy_polygons",
 # cmdclass['build_ext'] = build_ext
 
 setup(
-    name='geometry_utils',
-    version="0.0.1dev", # this should be automated
-    # cmdclass=cmdclass,
-    description="Utilities for basic computational geometry directly with numpy arrays.",
-    author="Christopher Barker, Rob Hetland",
-    author_email='Chris.Barker@noaa.gov',
-    url='https://github.com/NOAA-ORR-ERD/geometry_utils',
-    packages=['geometry_utils'],
     ext_modules=ext_modules,
-    install_requires=requirements,
-    keywords='geometry_utils',
-    classifiers=[
-        'Programming Language :: Python :: 3',
-    ]
 )
