@@ -10,19 +10,23 @@ import pytest
 
 import numpy as np
 
-## the Cython version:
-
-from geometry_utils.cy_line_crossings import cross_product, side_of_line, segment_cross, multi_segment_cross
+from geometry_utils.cy_line_crossings import (cross_product,
+                                              side_of_line,
+                                              segment_cross,
+                                              multi_segment_cross)
 
 
 def test_cross_product1():
+    """
+    should be zero for duplicate points
+    """
     assert cross_product(0, 0, 0, 0) == 0.0
     assert cross_product(1, 1, 1, 1) == 0.0
 
 
 def test_cross_product2():
     """
-    errors if non-numbers passed in"
+    errors if non-numbers passed in
     """
     with pytest.raises(TypeError):
         cross_product(1, 2, 3, 'string')
@@ -106,15 +110,14 @@ def test_multi_segment_cross():
 
     this does a lot of segment cross checks, where the segments are defined on a seprate array of points
     """
-    points = np.array((
-        (3.0, 5.0),
-        (2.0, 2.0),
-        (5.0, 2.0),
-        (7.0, 4.0),
-        (6.0, 6.0),
-        (4.0, 7.0),
-        (7.0, 2.0),
-    ),
+    points = np.array([(3.0, 5.0),
+                       (2.0, 2.0),
+                       (5.0, 2.0),
+                       (7.0, 4.0),
+                       (6.0, 6.0),
+                       (4.0, 7.0),
+                       (7.0, 2.0),
+                       ],
                       dtype=np.float64)
     segments = np.array((
         (1, 4),

@@ -57,7 +57,8 @@ def polygon_is_simple(polygon_verts):
 
     i.e. has no crossing segments, etc.
 
-    NOTE: this version is naive, and O(N^2):
+    NOTE: This version is naive, and O(N^2).
+          It simply checks each segment against all the other segments.
 
     Possible better option:
     Shamos-Hoey algorithm:

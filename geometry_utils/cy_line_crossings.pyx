@@ -92,8 +92,8 @@ cpdef double side_of_line(double x1, double y1,
     defined by the two points...they may not be on the segment
 
     The check is done by taking the
-    cross product of the vectors x1,y1 to x2,y2
-    and x1,y1 to Px,Py
+    cross product of the vectors x1, y1 to x2, y2
+    and x1, y1 to Px, Py
    
     """
 
@@ -222,5 +222,3 @@ def multi_segment_cross(double[:,:]points, int32_t[:,:] segments):
                 crosses.append( (<int32_t> i, <int32_t> j) )
     return crosses
 
-    
-        
