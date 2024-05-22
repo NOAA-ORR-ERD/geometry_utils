@@ -1,5 +1,4 @@
 from setuptools import setup
-import versioneer
 from distutils.extension import Extension
 from Cython.Distutils import build_ext
 
@@ -18,13 +17,13 @@ ext_modules = [Extension("geometry_utils.cy_polygons",
                          include_dirs=[numpy.get_include()]),
                ]
 
-cmdclass = versioneer.get_cmdclass()
-cmdclass['build_ext'] = build_ext
+# cmdclass = versioneer.get_cmdclass()
+# cmdclass['build_ext'] = build_ext
 
 setup(
     name='geometry_utils',
-    version=versioneer.get_version(),
-    cmdclass=cmdclass,
+    version="0.0.1dev", # this should be automated
+    # cmdclass=cmdclass,
     description="Utilities for basic computational geometry directly with numpy arrays.",
     author="Christopher Barker, Rob Hetland",
     author_email='Chris.Barker@noaa.gov',

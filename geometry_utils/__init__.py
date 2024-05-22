@@ -12,6 +12,8 @@ i.e. a polygon is expressed as a Nx2 numpy array of float64
 Some of these are in Cython for speed.
 """
 
+__version__ = "0.0.1dev"
+
 from .polygons import (polygon_inside,
                        polygon_area,
                        polygon_rotation,
