@@ -49,9 +49,18 @@ count = true
 
 [tool.pixi.project]
 channels = ["conda-forge"]
-platforms = ["osx-64"]
+platforms = ["linux-64", "osx-arm64", "osx-64", "win-64"]
 
 [tool.pixi.pypi-dependencies]
 geometry_utils = { path = ".", editable = true }
+[tool.pixi.dependencies]
+numpy = "*"
+cython = "*"
+pytest = "*"
+pytest-cov = "*"
 
 [tool.pixi.tasks]
+test = "pytest"
+
+# [tool.pixi.feature.test.tasks]
+# test = "pytest"
