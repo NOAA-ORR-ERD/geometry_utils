@@ -8,7 +8,7 @@ And a polygon_area function
 
 """
 
-# cython: language_level=
+# cython: language_level=3
 
 import cython
 # import both numpy and the Cython declarations for numpy

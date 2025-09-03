@@ -42,13 +42,6 @@ build-dir = "build"
 provider = "scikit_build_core.metadata.regex"
 input = "geometry_utils/__init__.py"
 
-# [tool.setuptools.packages.find]
-# where = ["."]  # list of folders that contain the packages (["."] by default)
-# include = ["geometry_utils*"]  # package names should match these glob patterns (["*"] by default)
-# exclude = ["my_package.tests*"]  # exclude packages matching these glob patterns (empty by default)
-# namespaces = false  # to disable scanning PEP 420 namespaces (true by default)
-
-
 [tool.flake8]
 ignore = ['E122', 'E123', 'E126', 'E127', 'E128', 'E731', 'E722']
 per-file-ignores = [
@@ -56,25 +49,3 @@ per-file-ignores = [
 ]
 max-line-length = 100
 count = true
-
-[tool.pixi.project]
-channels = ["conda-forge"]
-platforms = ["linux-64", "osx-arm64", "osx-64", "win-64"]
-
-# [tool.pixi.pypi-dependencies]
-# geometry_utils = { path = ".", editable = true }
-
-[tool.pixi.dependencies]
-scikit-build-core = "*"
-numpy = "*"
-cython = "*"
-cython-cmake = "*"
-pytest = "*"
-pytest-cov = "*"
-python-build = "*"
-
-[tool.pixi.tasks]
-test = "pytest"
-
-# [tool.pixi.feature.test.tasks]
-# test = "pytest"
