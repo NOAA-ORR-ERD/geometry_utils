@@ -19,9 +19,12 @@ There are a number of copmutational geometry libraries available.
 But most of them create a whole framework of objects: points, polygons,
 MultiPolygons, etc.
 
-But if you simply need to something simple: e.g. check whether a point is in a polygon, it's nice to have a simple set of functions to do the basic stuff on numpy arrays, without all the overhead of a full set of geometry objects.
+But if you simply need to something simple: e.g. check whether a point is in a polygon,
+it's nice to have a simple set of functions to do the basic stuff on numpy arrays, without all the overhead of a full set of geometry objects.
 
-These functions all depend on numpy. Some of the functons a pure (numpy) python, and some are written in Cython, or C wrapped in Cython. Most are vectorized, for fast results. e.g. points_in_polygon will check whether multiple points are in a polygon all in C.
+These functions all depend on numpy.
+Some of the functons a pure (numpy) python, and some are written in Cython, or C wrapped in Cython.
+Most are vectorized, for fast results. e.g. points_in_polygon will check whether multiple points are in a polygon all in C.
 
 Features
 ========
@@ -53,8 +56,10 @@ Multiple points are represented by a shape: ``(N,2)`` array: ``[(x, y), )x,y),..
 Polygons
 ........
 
-Multiple points are represented by a shape: ``(N,2)`` array: ``[(x, y), )x,y),...]`` of type ``float64`` (or equivalent nested list).
-(Note that this is exactly the same as multipel points)
+Polygons are represented by their vertixes as a shape: ``(N,2)`` array: ``[(x, y), )x,y),...]`` of type ``float64``
+(or equivalent nested list).
+
+(Note that this is exactly the same as multiple points)
 
 Functions
 ---------
@@ -63,6 +68,8 @@ Functions
 ..................
 
 Determine if points are inside a polygon.
+
+
 
 
 
