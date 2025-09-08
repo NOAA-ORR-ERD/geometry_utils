@@ -8,23 +8,19 @@ description = "Utilities for basic computational geometry directly with numpy ar
 authors = [{name = "Chris Barker", email = "Chris.Barker@noaa.gov"}]
 readme = "README.rst"
 license = {file = "LICENSE"}
-requires-python = ">= 3.9"
+requires-python = ">= 3.10"
 dependencies = ["numpy"]
 dynamic = ["version"]
 classifiers = [
   "Development Status :: 4 - Beta",
 
   # Indicate who your project is intended for
-#  "Intended Audience :: Developers",
-#  "Topic :: Software Development :: Build Tools",
+  "Intended Audience :: Developers",
 
-  # Pick your license as you wish (see also "license" above)
-  "License :: OSI Approved :: BSD-3-Clause",
-
-  "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
 ]
 
 [project.urls]
@@ -40,7 +36,7 @@ build-dir = "build"
 
 [tool.scikit-build.metadata.version]
 provider = "scikit_build_core.metadata.regex"
-input = "geometry_utils/__init__.py"
+input = "src/geometry_utils/__init__.py"
 
 [tool.flake8]
 ignore = ['E122', 'E123', 'E126', 'E127', 'E128', 'E731', 'E722']
