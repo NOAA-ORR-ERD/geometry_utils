@@ -2,6 +2,8 @@
 functions for 2-d line crossing checks
 """
 
+# cython: language_level=3
+
 from libc.stdint cimport  int32_t, uint32_t
 
 import numpy as np

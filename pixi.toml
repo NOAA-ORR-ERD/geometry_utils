@@ -1,0 +1,51 @@
+[project]
+channels = ["https://prefix.dev/conda-forge"]
+platforms = ["win-64", "linux-64", "osx-arm64", "osx-64"]
+
+# NOTE: this doesn't work so well with compiled code ...
+# [pypi-dependencies]
+# geometry_utils = { path = ".", editable = true }
+
+[dependencies]
+cmake = "*"
+cython = "*"
+cython-cmake = "*"
+ninja = "*"
+numpy = "*"
+pip = "*"
+pytest = "*"
+python = "*"
+python-build = "*"
+scikit-build-core = "*"
+
+[feature.py310.dependencies]
+python = "~=3.10.0"
+
+[feature.py311.dependencies]
+python = "~=3.11.0"
+
+[feature.py312.dependencies]
+python = "~=3.12.0"
+
+[feature.py313.dependencies]
+python = "~=3.13.0"
+
+[feature.dev.pypi-dependencies]
+geometry_utils = { path = ".", editable = true }
+
+[feature.dev.dependencies]
+ipython = "*"
+matplotlib = "*"
+pytest-cov = "*"
+
+[environments]
+default = { solve-group = "default" }
+py310 = [ "py310" ]      # implicit: test310 = ["py310", "default"]
+py311 = [ "py311" ]
+py312 = [ "py312" ]
+py313 = [ "py313" ]
+dev = ["dev", "py313"]
+
+[tasks]
+build = "pip install --no-build-isolation ."
+test = { cmd = ["pytest", "--pyargs", "geometry_utils"], depends-on = ["build"] }
