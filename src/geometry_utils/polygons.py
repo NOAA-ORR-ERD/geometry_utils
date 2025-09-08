@@ -6,10 +6,6 @@ Single module to hold the high-level API for working with polygons
 
 import numpy as np
 
-# from .cy_polygons import (points_in_poly,
-#                           points_in_polys,
-#                           signed_area,
-#                           )
 from . import cy_polygons as cyp
 
 from .import cy_line_crossings as clc
@@ -21,13 +17,14 @@ def polygon_inside(polygon_verts, trial_points):
 
     INPUTS
     ------
-    polygon_verts:  Mx2 array
-    trial_points:   Nx2 array
+    polygon_verts:  Nx2 array
+    trial_points:   Single point: len-2 seq (x, y) or multiple_points: Nx2 array
 
     RETURNS
     -------
     inside_points:  Boolean array (len(N))
                     True if the trial point is inside the polygon
+                    If input it single point, a single bool is returned
     '''
 
     polygon_verts = np.asarray(polygon_verts, dtype=np.float64)
@@ -39,12 +36,17 @@ def polygon_area(polygon_verts):
     """
     Calculate the area of a polygon
 
-    expects a sequence of tuples, or something like it (Nx2 array for instance),
+
+    INPUTS
+    ------
+    polygon_verts:  Nx2 array
+
+    Sequence of tuples, or something like it (Nx2 array for instance),
     of the points:
 
     [ (x1, y1), (x2, y2), (x3, y3), ...(xi, yi) ]
 
-    It simply computes the signed area -- the sign is CW or CCW
+    Computes the signed area -- the sign is CW or CCW
     See: http://paulbourke.net/geometry/clockwise/
     """
 
@@ -103,7 +105,7 @@ def polygon_rotation(polygon_verts, convex=False):
 
     INPUT
     -----
-    polygon_verts:  Mx2 array
+    polygon_verts:  Nx2 array
 
     convex=False: flag to indicate if the polygon is convex
                   -- if it is convex, a faster algorithm will be used.
@@ -111,15 +113,13 @@ def polygon_rotation(polygon_verts, convex=False):
     OUTPUT
     ------
     rotation:  scalar / boolean
-               1 for a positive rotation according to the right-hand rule
-               0 for a negative rotation according to the right hand rule
+               1 (cw) for a positive rotation according to the right-hand rule
+               0 (ccw) for a negative rotation according to the right hand rule
 
                Note, only defined for a simple polygon. Behavior is undetermined
                if the polygon has holes or crossing segments.
 
     '''
-    # fixme: need a test for a simple polygon!
-
     polygon_verts = np.asarray(polygon_verts, np.float64)
     s_a = cyp.signed_area(polygon_verts)
     if s_a < 0:
@@ -145,7 +145,7 @@ def polygon_centroid(polygon_verts):
     ------
     xy_centroid:  (2,)
 
-    NOTE: implimentation from:
+    NOTE: implementation from:
     # https://stackoverflow.com/questions/2792443/finding-the-centroid-of-a-polygon
     """
 

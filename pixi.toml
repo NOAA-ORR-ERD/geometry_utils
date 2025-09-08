@@ -35,6 +35,7 @@ geometry_utils = { path = ".", editable = true }
 
 [feature.dev.dependencies]
 ipython = "*"
+matplotlib = "*"
 pytest-cov = "*"
 
 [environments]
