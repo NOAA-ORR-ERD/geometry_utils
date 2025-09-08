@@ -1,18 +1,22 @@
 """
 geometry package
 
-This package has:
+This package has a collection of computional geometry routines
 
-A few higher-level objects for geometry: a Bounding Box class and a Polygon class.
+These routines are all designed to work with simple data types:
 
-It also has some lover level code basic geometry that acts on numpy arrays of points:
+Python floats
+numpy arrays
+
+For the most parts, regular python sequences (lists, tuples) will be
+converted to Python arrays for you when required.
 
 i.e. a polygon is expressed as a Nx2 numpy array of float64
 
 Some of these are in Cython for speed.
 """
 
-__version__ = "0.0.1dev"
+__version__ = "0.1.0dev"
 
 from .polygons import (polygon_inside,
                        polygon_area,
