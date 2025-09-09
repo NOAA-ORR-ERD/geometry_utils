@@ -26,3 +26,7 @@ python_add_library(cy_line_crossings MODULE "${cy_line_crossings_c}" WITH_SOABI)
 target_link_libraries(cy_line_crossings PUBLIC Python::NumPy)
 install(TARGETS cy_line_crossings DESTINATION geometry_utils)
 
+cython_transpile(src/cy_src/cy_rect.pyx LANGUAGE C OUTPUT_VARIABLE cy_rect_c)
+python_add_library(cy_rect MODULE "${cy_rect_c}" WITH_SOABI)
+target_link_libraries(cy_rect PUBLIC Python::NumPy)
+install(TARGETS cy_rect DESTINATION geometry_utils)
