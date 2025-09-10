@@ -13,14 +13,14 @@ NOTE: a "rect" is a 2x2 numpy array of dtype float64::
 import numpy as np
 import pytest
 
-
+from geometry_utils.utilities import point
 from geometry_utils import cy_rect as rect
 
-def point(x, y):
-    """
-    makes a compatible numpy array -- makes testing easier
-    """
-    return np.array((x, y), dtype=np.float64)
+# def point(x, y):
+#     """
+#     makes a compatible numpy array -- makes testing easier
+#     """
+#     return np.array((x, y), dtype=np.float64)
 
 def test_from_points():
         pts = np.array(((5, 2), (3, 4), (1, 6)), np.float64)
