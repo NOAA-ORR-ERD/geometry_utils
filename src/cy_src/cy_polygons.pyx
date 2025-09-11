@@ -300,12 +300,14 @@ cpdef tuple intersection(a: double[2], V: Vector, r: double[2], N: Vector):
 
 
 # @nb.njit(inline="always")
-def push_point(polygon: FloatArray, size: int, p: Point) -> int:
-    pass
-
-    # polygon[size][0] = p.x
-    # polygon[size][1] = p.y
-    # return size + 1
+# def push_point(polygon: FloatArray, size: int, p: Point) -> int:
+#     # polygon[size][0] = p.x
+#     # polygon[size][1] = p.y
+#     # return size + 1
+cdef inline int push_point(polygon: double[:,:], size: int, p: double[2]):
+    polygon[size,0] = p[0]
+    polygon[size,1] = p[1]
+    return size + 1
 
 
 # @nb.njit(inline="always")
