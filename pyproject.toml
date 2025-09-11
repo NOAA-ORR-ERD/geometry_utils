@@ -45,3 +45,8 @@ per-file-ignores = [
 ]
 max-line-length = 100
 count = true
+
+[tool.cibuildwheel]
+before-all = "uname -a"
+
+
