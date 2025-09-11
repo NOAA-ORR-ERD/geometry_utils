@@ -152,11 +152,11 @@ This is helpful if you are working on the Cython code, so that you can control t
 ``pixi run -e dev shell``
 
 
-will create a pixi shell with the package built and installed. YOu can then run the tests, change the  code, etc.
+will create a pixi shell with the package built and installed. You can then run the tests, change the  code, etc.
 
 ``pixi run build``
 
-Will build adn install the package.
+Will build and install the package.
 
 ``pixi run test``
 

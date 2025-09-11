@@ -43,6 +43,7 @@ expected = area_of_intersection(a, b)
 import numpy as np
 
 from geometry_utils.utilities import point, vector
+from geometry_utils.cy_core_types import Point, Vector
 
 from geometry_utils.cy_polygons import (
     inside,
@@ -50,7 +51,13 @@ from geometry_utils.cy_polygons import (
     box_area_of_intersection,
     intersection,
     polygon_polygon_clip_area,
+    dot_product,
 )
+
+def test_dot_product():
+    res = dot_product(Vector(3, 4), Vector(5, 6))
+
+    assert res == 39.0
 
 A = np.array(
     [
@@ -107,31 +114,31 @@ def test_inside():
     """
     # U: a -> b direction vector
     # p is point r or s
-    result = inside(point(3, 4), point(5, 6), point(7, 8))
+    result = inside(Point(3, 4), Point(5, 6), Point(7, 8))
 
     assert result
 
 
 def test_intersection():
     # Intersection
-    a = point(0.0, 0.0)
-    V = vector(1.0, 1.0)
-    r = point(1.0, 0.0)
-    s = point(0.0, 1.0)
-    U = vector(s[0] - r[0], s[1] - r[1])
-    N = vector(-U[1], U[0])
+    a = Point(0.0, 0.0)
+    V = Vector(1.0, 1.0)
+    r = Point(1.0, 0.0)
+    s = Point(0.0, 1.0)
+    U = Vector(s[0] - r[0], s[1] - r[1])
+    N = Vector(-U[1], U[0])
     success, p = intersection(a, V, r, N)
     assert success
-    assert np.allclose(p, [0.5, 0.5])
+    assert np.allclose([p.x, p.y], [0.5, 0.5])
 
 def test_intersection_parallel():
     # Parallel lines, no intersection
-    a = point(0.0, 0.0)
-    V = vector(1.0, 1.0)
-    r = point(1.0, 0.0)
-    s = point(2.0, 1.0)
-    U = vector(s[0] - r[0], s[1] - r[1])
-    N = vector(-U[1], U[0])
+    a = Point(0.0, 0.0)
+    V = Vector(1.0, 1.0)
+    r = Point(1.0, 0.0)
+    s = Point(2.0, 1.0)
+    U = Vector(s[0] - r[0], s[1] - r[1])
+    N = Vector(-U[1], U[0])
     success, p = intersection(a, V, r, N)
     assert not success
     assert np.isnan(p[0])

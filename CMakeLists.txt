@@ -15,7 +15,8 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
 cython_transpile(src/cy_src/cy_polygons.pyx LANGUAGE C OUTPUT_VARIABLE cy_polygons_c)
 python_add_library(cy_polygons
-                   MODULE "${cy_polygons_c}"
+                   MODULE
+                   "${cy_polygons_c}"
                    src/cy_src/c_point_in_polygon.c
                    WITH_SOABI)
 target_link_libraries(cy_polygons PUBLIC Python::NumPy)
@@ -30,3 +31,10 @@ cython_transpile(src/cy_src/cy_rect.pyx LANGUAGE C OUTPUT_VARIABLE cy_rect_c)
 python_add_library(cy_rect MODULE "${cy_rect_c}" WITH_SOABI)
 target_link_libraries(cy_rect PUBLIC Python::NumPy)
 install(TARGETS cy_rect DESTINATION geometry_utils)
+
+
+cython_transpile(src/cy_src/cy_core_types.pyx LANGUAGE C OUTPUT_VARIABLE cy_core_types_c)
+python_add_library(cy_core_types MODULE "${cy_core_types_c}" WITH_SOABI)
+target_link_libraries(cy_core_types PUBLIC Python::NumPy)
+install(TARGETS cy_core_types DESTINATION geometry_utils)
+

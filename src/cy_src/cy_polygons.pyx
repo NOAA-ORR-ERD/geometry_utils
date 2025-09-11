@@ -15,6 +15,8 @@ import cython
 import numpy as np
 cimport numpy as cnp
 
+from geometry_utils.cy_core_types import Point, Vector
+
 # declare the interface to the C code
 cdef extern char c_point_in_poly1(size_t nvert, double *vertices, double *point)
 
@@ -262,41 +264,51 @@ import numpy as np
 # )
 # from numba_celltree.utils import allocate_clip_polygon, copy
 
-cdef inline float dot_product(u: double[2], v: double[2]):
-    return u[0] * v[0] + u[1] * v[1]
 
-# @nb.njit(inline="always")
-cpdef bint inside(p: double[2], r: double[2], U: double[2]):
+cpdef inline double dot_product(u: Vector, v: Vector):
+    return u.x * v.x + u.y * v.y
+
+# cdef inline float dot_product(u: double[2], v: double[2]):
+#     return u[0] * v[0] + u[1] * v[1]
+
+# # @nb.njit(inline="always")
+# cpdef bint inside(p: double[2], r: double[2], U: double[2]):
+#     # U: a -> b direction vector
+#     # p is point r or s
+#     return U[0] * (p[1] - r[1]) > U[1] * (p[0] - r[0])
+
+cpdef inside(p: Point, r: Point, U: Vector):
     # U: a -> b direction vector
     # p is point r or s
-    return U[0] * (p[1] - r[1]) > U[1] * (p[0] - r[0])
+    return U.x * (p.y - r.y) > U.y * (p.x - r.x)
+
 
 # @nb.njit(inline="always")
-cpdef tuple intersection(a: double[2], V: Vector, r: double[2], N: Vector):
-    # Find the intersection with an (infinite) clipping plane
-    cdef double[2] W = np.array((r[0] - a[0], r[1] - a[1]), dtype=np.float64)
-    cdef double[2] result
-    nw = dot_product(N, W)
-    nv = dot_product(N, V)
-    if nv != 0:
-        t = nw / nv
-        result = np.array((a[0] + t * V[0], a[1] + t * V[1]), dtype=np.float64)
-        return True, result
-    else:
-        # parallel lines
-        return False, np.array((np.nan, np.nan), dtype=np.float64)
-
-# def intersection(a: Point, V: Vector, r: Point, N: Vector) -> Tuple[bool, Point]:
+# cpdef tuple intersection(a: double[2], V: Vector, r: double[2], N: Vector):
 #     # Find the intersection with an (infinite) clipping plane
-#     W = Vector(r.x - a.x, r.y - a.y)
+#     cdef double[2] W = np.array((r[0] - a[0], r[1] - a[1]), dtype=np.float64)
+#     cdef double[2] result
 #     nw = dot_product(N, W)
 #     nv = dot_product(N, V)
 #     if nv != 0:
 #         t = nw / nv
-#         return True, Point(a.x + t * V.x, a.y + t * V.y)
+#         result = np.array((a[0] + t * V[0], a[1] + t * V[1]), dtype=np.float64)
+#         return True, result
 #     else:
 #         # parallel lines
-#         return False, Point(np.nan, np.nan)
+#         return False, np.array((np.nan, np.nan), dtype=np.float64)
+
+cpdef tuple intersection(a: Point, V: Vector, r: Point, N: Vector):
+    # Find the intersection with an (infinite) clipping plane
+    W = Vector(r.x - a.x, r.y - a.y)
+    nw = dot_product(N, W)
+    nv = dot_product(N, V)
+    if nv != 0:
+        t = nw / nv
+        return True, Point(a.x + t * V.x, a.y + t * V.y)
+    else:
+        # parallel lines
+        return False, Point(np.nan, np.nan)
 
 
 # @nb.njit(inline="always")
@@ -304,9 +316,9 @@ cpdef tuple intersection(a: double[2], V: Vector, r: double[2], N: Vector):
 #     # polygon[size][0] = p.x
 #     # polygon[size][1] = p.y
 #     # return size + 1
-cdef inline int push_point(polygon: double[:,:], size: int, p: double[2]):
-    polygon[size,0] = p[0]
-    polygon[size,1] = p[1]
+cdef inline int push_point(polygon: double[:,:], size: int, p: Point):
+    polygon[size,0] = p.x
+    polygon[size,1] = p.y
     return size + 1
 
 
@@ -377,17 +389,29 @@ def polygon_polygon_clip_area(polygon: Sequence, clipper: Sequence) -> float:
     # area = polygon_area(output[:n_output])
     # return area
 
+cpdef double[:,:] area_of_intersection(
+    vertices_a: double[:,:],
+    vertices_b: double[:,:],
+    faces_a: double[:,:],
+    faces_b: double[:,:],
+    indices_a: double[:,:],
+    indices_b: double[:,:],
+    ):
+    n_intersection = indices_a.size
+    cdef double[:,:] area = np.empty(n_intersection, dtype=np.float64)
+
+    return area
+
 
 # @nb.njit(parallel=PARALLEL, cache=True)
-def area_of_intersection(
-    vertices_a: FloatArray,
-    vertices_b: FloatArray,
-    faces_a: IntArray,
-    faces_b: IntArray,
-    indices_a: IntArray,
-    indices_b: IntArray,
-) -> FloatArray:
-    pass
+# def area_of_intersection(
+#     vertices_a: FloatArray,
+#     vertices_b: FloatArray,
+#     faces_a: IntArray,
+#     faces_b: IntArray,
+#     indices_a: IntArray,
+#     indices_b: IntArray,
+# ) -> FloatArray:
     # n_intersection = indices_a.size
     # area = np.empty(n_intersection, dtype=FloatDType)
     # for i in nb.prange(n_intersection):

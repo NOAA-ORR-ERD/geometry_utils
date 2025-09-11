@@ -37,6 +37,7 @@ geometry_utils = { path = ".", editable = true }
 ipython = "*"
 matplotlib = "*"
 pytest-cov = "*"
+twine = "*"
 
 [environments]
 default = { solve-group = "default" }
