@@ -37,7 +37,7 @@ jobs:
     steps:
     - uses: actions/checkout@v5
       with:
-#        fetch-depth: 0  # Optional, use if you use setuptools_scm
+        fetch-depth: 0  # Optional, use if you use setuptools_scm
 
     - name: Build SDist
       run: pipx run build --sdist
