@@ -81,7 +81,7 @@ Functions
 ---------
 
 ``polygon_inside(polygon_verts, trial_points)``
-..................
+...............................................
 
 Determine if points are inside a polygon.
 
