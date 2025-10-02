@@ -123,9 +123,9 @@ def polygon_rotation(polygon_verts, convex=False):
     polygon_verts = np.asarray(polygon_verts, np.float64)
     s_a = cyp.signed_area(polygon_verts)
     if s_a < 0:
-        return 1
+        return True
     elif s_a > 0:
-        return 0
+        return False
     else:
         raise ValueError("can't compute rotation of a zero-area polygon")
 
