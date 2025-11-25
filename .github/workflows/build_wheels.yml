@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v5
 
       - name: Build wheels
-        uses: pypa/cibuildwheel@v3.2.0
+        uses: pypa/cibuildwheel@v3.2.1
         # env:
         #   CIBW_SOME_OPTION: value
         #   ...
@@ -26,7 +26,7 @@ jobs:
         #   output-dir: wheelhouse
         #   config-file: "{package}/pyproject.toml"
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: cibw-wheels-${{ matrix.os }}-${{ strategy.job-index }}
           path: ./wheelhouse/*.whl
@@ -50,14 +50,14 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'release' && github.event.action == 'published'
     steps:
-    - uses: actions/download-artifact@v5
+    - uses: actions/download-artifact@v6
       with:
         pattern: cibw-*
         path: dist
         merge-multiple: true
 
     - uses: pypa/gh-action-pypi-publish@release/v1
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v5
       with:
         name: cibw-sdist
         path: dist/*.tar.gz
