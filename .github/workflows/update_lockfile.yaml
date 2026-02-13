@@ -22,13 +22,15 @@ jobs:
 
       - name: Update pixi lock file
         uses: prefix-dev/setup-pixi@v0.9.3
-        with:
-          # pixi-version: v0.22.0 don't want to hard code this!
-          cache: true
-          # auth-host: prefix.dev
-          # auth-token: ${{ secrets.PREFIX_DEV_TOKEN }}
-        run: |
-        pixi update
-        pixi run -e ${{ matrix.environment }} test
+        run: pixi update
+
+      - name: run tests with new lockfile
+        run: pixi run -e ${{ matrix.environment }} test
+
+        # with:
+        #   # pixi-version: v0.22.0 don't want to hard code this!
+        #   cache: true
+        #   # auth-host: prefix.dev
+        #   # auth-token: ${{ secrets.PREFIX_DEV_TOKEN }}
 
 
