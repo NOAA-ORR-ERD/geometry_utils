@@ -42,22 +42,38 @@ jobs:
     - name: Build SDist
       run: pipx run build --sdist
 
-  upload_all:
-    needs: [build_wheels, make_sdist]
-    environment: pypi
-    permissions:
-      id-token: write
+  pypi-publish:
+    name: Upload release to PyPI
     runs-on: ubuntu-latest
+    needs: [build_wheels, make_sdist]
+    environment:
+      name: build_wheels
+      url: https://pypi.org/project/geometry-utils/
+    permissions:
+      id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
     if: github.event_name == 'release' && github.event.action == 'published'
+
     steps:
-    - uses: actions/download-artifact@v7
+    - name: get wheels from artifacts
+      uses: actions/download-artifact@v7
       with:
         pattern: cibw-*
         path: dist
         merge-multiple: true
 
-    - uses: pypa/gh-action-pypi-publish@release/v1
-    - uses: actions/upload-artifact@v6
+# got this from https://github.com/pypa/gh-action-pypi-publish
+    # - name: Publish package distributions to PyPI
+    #   uses: pypa/gh-action-pypi-publish@release/v1
+    - name: Publish package distributions to TestPyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
       with:
-        name: cibw-sdist
-        path: dist/*.tar.gz
+        repository-url: https://test.pypi.org/legacy/
+
+
+
+# old version -- never worked
+    # - uses: pypa/gh-action-pypi-publish@release/v1
+    # - uses: actions/upload-artifact@v6
+    #   with:
+    #     name: cibw-sdist
+    #     path: dist/*.tar.gz
