@@ -1,0 +1,32 @@
+# make sure that everything still works when
+# the pixi lockfile is updated
+name: update_lockfile
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # os: [ubuntu-latest, ubuntu-24.04-arm, windows-latest, macos-latest, macos-15-intel]
+        # environment: [py310, py311, py312, py313, py314]
+        # don't need to test everything -- lock file will be built for
+        # all anyway
+        os: [ubuntu-latest]
+        environment: [py314]
+
+    steps:
+      - uses: actions/checkout@v6
+      - uses: prefix-dev/setup-pixi@v0.9.3
+        with:
+          # pixi-version: v0.22.0 don't want to hard code this!
+          cache: true
+          # auth-host: prefix.dev
+          # auth-token: ${{ secrets.PREFIX_DEV_TOKEN }}
+        - run: |
+          pixi update
+          pixi run -e ${{ matrix.environment }} test
+
+
