@@ -25,9 +25,7 @@ jobs:
           cache: true
           # auth-host: prefix.dev
           # auth-token: ${{ secrets.PREFIX_DEV_TOKEN }}
-      - run: pixi update
-
-      - run: pixi run -e ${{ matrix.environment }} test
+      - run: pixi update && pixi run -e ${{ matrix.environment }} test
 
 
     # steps:
