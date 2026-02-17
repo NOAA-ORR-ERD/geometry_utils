@@ -45,7 +45,7 @@ jobs:
           CIBW_TEST_COMMAND: >
             python -c "import geometry_utils; print(f'geometry_utils v{geometry_utils.__version__}')" &&
             python -m pytest --pyargs geometry_utils &&
-            abi3audit ${{ github.workspace }}/wheelhouse/*.whl --summary --assume-minimum-abi3 --verbose --strict
+            abi3audit ${{ github.workspace }}/wheelhouse/*.whl --summary --assume-minimum-abi3 3.11 --verbose --strict
 
       - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f  # v6.0.0
         with:
