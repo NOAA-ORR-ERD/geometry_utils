@@ -18,9 +18,6 @@ python = "*"
 python-build = "*"
 scikit-build-core = "*"
 
-[feature.py310.dependencies]
-python = "~=3.10.0"
-
 [feature.py311.dependencies]
 python = "~=3.11.0"
 
@@ -43,12 +40,11 @@ pytest-cov = "*"
 
 [environments]
 default = { solve-group = "default" }
-py310 = [ "py310" ]      # implicit: test310 = ["py310", "default"]
 py311 = [ "py311" ]
 py312 = [ "py312" ]
 py313 = [ "py313" ]
 py314 = [ "py314" ]
-dev = ["dev", "py310"]
+dev = ["dev", "py311"]
 
 [tasks]
 build = "pip install --no-build-isolation ."
