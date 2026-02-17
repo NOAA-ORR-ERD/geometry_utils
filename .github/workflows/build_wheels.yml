@@ -38,18 +38,14 @@ jobs:
         uses: pypa/cibuildwheel@298ed2fb2c105540f5ed055e8a6ad78d82dd3a7e  # v3.3.1
         env:
           CIBW_SKIP: "*-musllinux*"
-          # We'll need this only if we go for ABI3
-          # CIBW_BUILD: "cp311-* cp314-*"
+          CIBW_BUILD: "cp311-* cp314-*"
           CIBW_ARCHS: ${{ matrix.arch }}
           CIBW_BUILD_FRONTEND: build
-          CIBW_TEST_REQUIRES: pytest
+          CIBW_TEST_REQUIRES: pytest abi3audit
           CIBW_TEST_COMMAND: >
             python -c "import geometry_utils; print(f'geometry_utils v{geometry_utils.__version__}')" &&
             python -m pytest --pyargs geometry_utils
-        # with:
-        #   package-dir: .
-        #   output-dir: wheelhouse
-        #   config-file: "{package}/pyproject.toml"
+            abi3audit ${{ github.workspace }}/wheelhouse/*.whl --summary --assume-minimum-abi3 --verbose --strict
 
       - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f  # v6.0.0
         with:
