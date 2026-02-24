@@ -99,7 +99,7 @@ polys = [([(5, 5), (5, 15), (15, 15), (15, 5)], (10, 10), 'square'), # simple sq
          ]
 
 @pytest.mark.parametrize(('poly', 'result', 'name'), polys)
-def test_polygon_centroid(poly, result, name):
+def test_polygon_centroid(poly, result, name, num_parallel_threads):
 
     centroid = polygon_centroid(poly)
     print(f"{poly=}")
@@ -108,7 +108,7 @@ def test_polygon_centroid(poly, result, name):
     # duplicate the end point -- should be the same
     poly.append(poly[0])
     # plot before the assert, in case it fails
-    if HAVE_MPL:
+    if HAVE_MPL and num_parallel_threads == 1:
         poly = np.asarray(poly)
         fig, ax = plt.subplots()
         ax.plot(poly[:, 0], poly[:, 1], '-o')
@@ -131,11 +131,11 @@ simple_polys = [
                 ]
 
 @pytest.mark.parametrize(('poly', 'name'), simple_polys)
-def test_polygon_is_simple_yes(poly, name):
+def test_polygon_is_simple_yes(poly, name, num_parallel_threads):
     """
     tests simple polygons
     """
-    if HAVE_MPL:
+    if HAVE_MPL and num_parallel_threads == 1:
         plot_poly(poly, OUTPUT_DIR / f"not_intersecting_{name}.png")
 
     assert polygon_is_simple(poly)
@@ -153,11 +153,11 @@ intersecting_polys = [
                 ]
 
 @pytest.mark.parametrize(('poly', 'name'), intersecting_polys)
-def test_polygon_is_simple_no(poly, name):
+def test_polygon_is_simple_no(poly, name, num_parallel_threads):
     """
     tests simple polygons
     """
-    if HAVE_MPL:
+    if HAVE_MPL and num_parallel_threads == 1:
         plot_poly(poly, OUTPUT_DIR / f"intersecting_{name}.png")
 
     assert not polygon_is_simple(poly)

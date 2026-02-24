@@ -13,7 +13,6 @@ cython-cmake = "*"
 ninja = "*"
 numpy = "*"
 pip = "*"
-pytest = "*"
 python = "*"
 python-build = "*"
 scikit-build-core = "*"
@@ -36,7 +35,9 @@ geometry_utils = { path = ".", editable = true }
 [feature.dev.dependencies]
 ipython = "*"
 matplotlib = "*"
+pytest = "*"
 pytest-cov = "*"
+pytest-run-parallel = "*"
 
 [environments]
 default = { solve-group = "default" }
@@ -46,6 +47,7 @@ py313 = [ "py313" ]
 py314 = [ "py314" ]
 dev = ["dev", "py311"]
 
-[tasks]
+[feature.dev.tasks]
 build = "pip install --no-build-isolation ."
 test = { cmd = ["pytest", "--pyargs", "geometry_utils"], depends-on = ["build"] }
+test_threading = { cmd = ["pytest", "--parallel-threads=20", "--iterations=20", "--pyargs", "geometry_utils", ], depends-on = ["build"] }
