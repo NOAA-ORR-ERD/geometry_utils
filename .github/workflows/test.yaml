@@ -22,7 +22,8 @@ jobs:
       - run: pixi run -e ${{ matrix.environment }} test
 
   test_threading:
-    runs-on: ubuntu-latest  # do we need to do a matrix for this?
+    runs-on: "ubuntu-latest"
+    strategy:
       fail-fast: false
       matrix:
         environment: [py313, py314] # probably only need 314 now, but ??
