@@ -21,16 +21,20 @@ pytest-cov = "*"
 pytest-run-parallel = "*"
 
 [feature.py311.dependencies]
-python = "~=3.11.0"
+python = "~=3.11"
 
 [feature.py312.dependencies]
-python = "~=3.12.0"
+python = "~=3.12"
 
 [feature.py313.dependencies]
-python = "~=3.13.0"
+python = "~=3.13"
 
 [feature.py314.dependencies]
-python = "~=3.14.0"
+python = "~=3.14"
+
+[feature.py314t.dependencies]
+python = "~=3.14"
+python-freethreading = "*"
 
 [feature.dev.pypi-dependencies]
 geometry_utils = { path = ".", editable = true }
@@ -45,6 +49,7 @@ py311 = [ "py311" ]
 py312 = [ "py312" ]
 py313 = [ "py313" ]
 py314 = [ "py314" ]
+py314t = [ "py314t" ]
 dev = ["dev", "py311"]
 
 [tasks]
